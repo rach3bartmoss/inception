@@ -1,0 +1,22 @@
+services:
+  nginx: nginx:1.25
+    image: nginx
+    volumes:
+      -
+    ports:
+      - "443:443"
+    networks:
+    depends_on:
+    restart:
+
+
+  mariadb:
+    image: mariadb
+    volumes:
+      -
+    networks:
+    depends_on:
+    restart:
+
+# docker-compose up -d
+# docker-compose down 

@@ -1,0 +1,20 @@
+inception/
+│
+├── Makefile
+├── docker-compose.yml
+├── .env
+│
+└── srcs/
+    └── requirements/
+        ├── nginx/
+        │   ├── Dockerfile
+        │   └── conf/...
+        │
+        ├── wordpress/
+        │   ├── Dockerfile
+        │   └── tools/...
+        │
+        └── mariadb/
+            ├── Dockerfile
+            └── tools/...
+
