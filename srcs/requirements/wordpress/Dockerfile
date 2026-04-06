@@ -19,6 +19,9 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 	&& chmod +x wp-cli.phar \
 	&& mv wp-cli.phar /usr/local/bin/wp
 
+COPY conf/www.conf /etc/php83/php-fpm.d/www.conf
+COPY conf/php.ini /etc/php83/conf.d/custom.ini
+
 COPY tools/wordpress.sh /tools/wordpress.sh
 RUN chmod +x /tools/wordpress.sh
 
