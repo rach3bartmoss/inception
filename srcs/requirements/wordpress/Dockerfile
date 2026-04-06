@@ -26,6 +26,9 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 RUN sed -i 's|listen = /run/php-fpm/php-fpm.sock|listen = 9000|g' \
     /etc/php83/php-fpm.d/www.conf
 
+COPY conf/www.conf /etc/php83/php-fpm.d/www.conf
+COPY conf/php.ini /etc/php83/conf.d/custom.ini
+
 COPY tools/wordpress.sh /tools/wordpress.sh
 
 # Fix line endings AND set permissions
