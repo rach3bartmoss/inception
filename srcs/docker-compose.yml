@@ -1,22 +1,44 @@
 services:
-  nginx: nginx:1.25
-    image: nginx
+
+  nginx:
+    build:
+      ./requirements/nginx
     volumes:
-      -
+      - wordpress:/var/www/html
     ports:
       - "443:443"
     networks:
+      - app-network
     depends_on:
-    restart:
+      - wordpress
+    restart: always
 
+  wordpress:
+    build: ./requirements/wordpress
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - app-network
+    depends_on:
+      - mariadb
+    restart: always
 
   mariadb:
-    image: mariadb
+    build: ./requirements/mariadb
     volumes:
-      -
+      - mariadb:/var/lib/mysql
     networks:
-    depends_on:
-    restart:
+      - app-network
+    restart: always
 
+volumes:
+  wordpress:
+    driver: local
+  mariadb:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
 # docker-compose up -d
 # docker-compose down 
