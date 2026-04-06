@@ -26,6 +26,10 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 RUN sed -i 's|listen = /run/php-fpm/php-fpm.sock|listen = 9000|g' \
     /etc/php83/php-fpm.d/www.conf
 
+# test this later with ftp on and off
+# change user and group in www.conf to www-data
+# RUN adduser -D -g 'www-data' www-data
+
 COPY conf/www.conf /etc/php83/php-fpm.d/www.conf
 COPY conf/php.ini /etc/php83/conf.d/custom.ini
 

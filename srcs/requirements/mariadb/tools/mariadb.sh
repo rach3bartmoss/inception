@@ -1,16 +1,13 @@
 #!/bin/sh
 
-# Create runtime directory for socket
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
 chown -R mysql:mysql /var/lib/mysql
 
-# Initialize the database only if not already done
 if [ ! -d "/var/lib/mysql/mysql" ]; then
 	echo "Initializing MariaDB data directory..."
 	mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
 
-	# Start MariaDB temporarily to run setup queries
 	mysqld --user=mysql --bootstrap << EOF
 FLUSH PRIVILEGES;
 
