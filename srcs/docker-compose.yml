@@ -1,8 +1,6 @@
 services:
-
   nginx:
-    build:
-      ./requirements/nginx
+    build: ./requirements/nginx
     volumes:
       - wordpress:/var/www/html
     ports:
@@ -51,4 +49,4 @@ networks:
   app-network:
     driver: bridge
 # docker-compose up -d
-# docker-compose down 
+# docker-compose down
