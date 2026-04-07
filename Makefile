@@ -32,9 +32,18 @@ down:
 	@$(COMPOSE) down
 	@echo "$(GREEN)Containers stopped.$(RESET)"
 
+down-bonus:
+	@echo "$(YELLOW)Stopping bonus containers...$(RESET)"
+	@$(COMPOSE) --profile bonus down
+	@echo "$(GREEN)Bonus containers stopped.$(RESET)"
+
 stop:
 	@echo "$(YELLOW)Pausing containers...$(RESET)"
 	@$(COMPOSE) stop
+
+stop-bonus:
+	@echo "$(YELLOW)Pausing bonus containers...$(RESET)"
+	@$(COMPOSE) --profile bonus stop
 
 start:
 	@echo "$(YELLOW)Starting containers...$(RESET)"
@@ -69,4 +78,4 @@ fclean: down
 
 re: fclean all
 
-.PHONY: all setup up bonus down stop start build ps logs log rebuild fclean re
+.PHONY: all setup up bonus down down-bonus stop stop-bonus start build ps logs log rebuild fclean re
