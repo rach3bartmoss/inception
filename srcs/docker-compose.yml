@@ -31,6 +31,44 @@ services:
       - app-network
     restart: always
 
+  redis:
+    build: ./requirements/bonus/redis
+    volumes:
+      - redis:/data
+    networks:
+      - app-network
+    restart: always
+    profiles:
+      - bonus
+
+  ftp:
+    build: ./requirements/bonus/ftp
+    env_file: .env
+    volumes:
+      - wordpress:/var/www/html
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    networks:
+      - app-network
+    depends_on:
+      - wordpress
+    restart: always
+    profiles:
+      - bonus
+
+  adminer:
+    build: ./requirements/bonus/adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    depends_on:
+      - mariadb
+    restart: always
+    profiles:
+      - bonus
+
 volumes:
   wordpress:
     driver: local
@@ -43,6 +81,12 @@ volumes:
     driver_opts:
       type: none
       device: /home/dopereir/data/mariadb
+      o: bind
+  redis:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/dopereir/data/redis
       o: bind
 
 networks:

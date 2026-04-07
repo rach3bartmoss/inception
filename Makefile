@@ -14,12 +14,18 @@ setup:
 	@echo "$(YELLOW)Creating data directories...$(RESET)"
 	@mkdir -p $(DATA_PATH)/wordpress
 	@mkdir -p $(DATA_PATH)/mariadb
+	@mkdir -p $(DATA_PATH)/redis
 	@echo "$(GREEN)Directories created at $(DATA_PATH)$(RESET)"
 
 up: setup
 	@echo "$(YELLOW)Building and starting containers...$(RESET)"
 	@$(COMPOSE) up -d --build
 	@echo "$(GREEN)All containers are up!$(RESET)"
+
+bonus: setup
+	@echo "$(YELLOW)Building and starting mandatory + bonus containers...$(RESET)"
+	@$(COMPOSE) --profile bonus up -d --build
+	@echo "$(GREEN)Bonus stack is up!$(RESET)"
 
 down:
 	@echo "$(YELLOW)Stopping containers...$(RESET)"
@@ -44,9 +50,14 @@ ps:
 logs:
 	@$(COMPOSE) logs -f
 
-## Show logs for a specific service: make log s=nginx
 log:
 	@$(COMPOSE) logs -f $(s)
+
+## make rebuild s=wordpress
+rebuild:
+	@echo "$(YELLOW)Rebuilding $(s)...$(RESET)"
+	@$(COMPOSE) up -d --build --no-deps $(s)
+	@echo "$(GREEN)$(s) rebuilt and restarted!$(RESET)"
 
 fclean: down
 	@echo "$(RED)Removing all containers, images and volumes...$(RESET)"
@@ -58,4 +69,4 @@ fclean: down
 
 re: fclean all
 
-.PHONY: all setup up down stop start build ps logs log fclean re
+.PHONY: all setup up bonus down stop start build ps logs log rebuild fclean re

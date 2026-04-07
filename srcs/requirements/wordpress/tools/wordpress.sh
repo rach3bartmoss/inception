@@ -1,6 +1,29 @@
 #!/bin/sh
 set -e
 
+configure_redis_cache() {
+	REDIS_HOST_VALUE="${REDIS_HOST:-redis}"
+	REDIS_PORT_VALUE="${REDIS_PORT:-6379}"
+
+	if REDIS_HOST="${REDIS_HOST_VALUE}" REDIS_PORT="${REDIS_PORT_VALUE}" php83 -r '
+		$host = getenv("REDIS_HOST") ?: "redis";
+		$port = (int)(getenv("REDIS_PORT") ?: 6379);
+		$socket = @fsockopen($host, $port, $errno, $errstr, 2);
+		if (!$socket) {
+			exit(1);
+		}
+		fclose($socket);
+	'; then
+		echo "Redis is reachable, configuring WordPress cache..."
+		wp config set --allow-root --type=constant WP_REDIS_HOST "${REDIS_HOST_VALUE}" || true
+		wp config set --allow-root --type=constant --raw WP_REDIS_PORT "${REDIS_PORT_VALUE}" || true
+		wp plugin install redis-cache --activate --allow-root || true
+		wp redis enable --allow-root || true
+	else
+		echo "Redis is not reachable, skipping Redis cache setup..."
+	fi
+}
+
 mkdir -p /var/www/html
 cd /var/www/html
 
@@ -46,6 +69,8 @@ if [ ! -f wp-login.php ]; then
 else
 	echo "WordPress already installed, skipping setup..."
 fi
+
+configure_redis_cache
 
 echo "Starting PHP-FPM..."
 exec php-fpm83 -F -R
