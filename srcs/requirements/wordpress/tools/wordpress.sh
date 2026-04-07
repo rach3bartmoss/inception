@@ -4,6 +4,7 @@ set -e
 configure_redis_cache() {
 	REDIS_HOST_VALUE="${REDIS_HOST:-redis}"
 	REDIS_PORT_VALUE="${REDIS_PORT:-6379}"
+	WP_CONFIG_FILE="/var/www/html/wp-config.php"
 
 	if REDIS_HOST="${REDIS_HOST_VALUE}" REDIS_PORT="${REDIS_PORT_VALUE}" php83 -r '
 		$host = getenv("REDIS_HOST") ?: "redis";
@@ -15,9 +16,16 @@ configure_redis_cache() {
 		fclose($socket);
 	'; then
 		echo "Redis is reachable, configuring WordPress cache..."
-		wp config set --allow-root --type=constant WP_REDIS_HOST "${REDIS_HOST_VALUE}" || true
-		wp config set --allow-root --type=constant --raw WP_REDIS_PORT "${REDIS_PORT_VALUE}" || true
+		if [ -f "${WP_CONFIG_FILE}" ]; then
+			if grep -q "WP_REDIS_HOST" "${WP_CONFIG_FILE}"; then
+				perl -0pi -e "s|define\( 'WP_REDIS_HOST', '.*?' \);|define( 'WP_REDIS_HOST', '${REDIS_HOST_VALUE}' );|g; s|define\( 'WP_REDIS_PORT', .*? \);|define( 'WP_REDIS_PORT', ${REDIS_PORT_VALUE} );|g" "${WP_CONFIG_FILE}"
+			else
+				perl -0pi -e "s|/\* That's all, stop editing! Happy publishing\. \*/|define( 'WP_REDIS_HOST', '${REDIS_HOST_VALUE}' );\ndefine( 'WP_REDIS_PORT', ${REDIS_PORT_VALUE} );\n\n/* That's all, stop editing! Happy publishing. */|" "${WP_CONFIG_FILE}"
+			fi
+		fi
+		REDIS_HOST="${REDIS_HOST_VALUE}" REDIS_PORT="${REDIS_PORT_VALUE}" \
 		wp plugin install redis-cache --activate --allow-root || true
+		REDIS_HOST="${REDIS_HOST_VALUE}" REDIS_PORT="${REDIS_PORT_VALUE}" \
 		wp redis enable --allow-root || true
 	else
 		echo "Redis is not reachable, skipping Redis cache setup..."
