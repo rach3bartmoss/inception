@@ -55,36 +55,44 @@ if [ "$db_ready" != "true" ]; then
 	exit 1
 fi
 
-if [ ! -f wp-login.php ]; then
-	echo "Downloading WordPress..."
-	wp core download --allow-root --path=/var/www/html
+if [ ! -f wp-login.php ] || [ ! -f wp-config.php ]; then
+	if [ ! -f wp-login.php ]; then
+		echo "Downloading WordPress..."
+		wp core download --allow-root --path=/var/www/html
+	fi
 
-	echo "Creating wp-config.php..."
-	wp config create \
-		--allow-root \
-		--dbname=${MYSQL_DATABASE} \
-		--dbuser=${MYSQL_USER} \
-		--dbpass=${MYSQL_PASSWORD} \
-		--dbhost=mariadb || { echo "config failed!"; exit 1; }
+	if [ ! -f wp-config.php ]; then
+		echo "Creating wp-config.php..."
+		wp config create \
+			--allow-root \
+			--dbname=${MYSQL_DATABASE} \
+			--dbuser=${MYSQL_USER} \
+			--dbpass=${MYSQL_PASSWORD} \
+			--dbhost=mariadb || { echo "config failed!"; exit 1; }
+	fi
 
-	echo "Installing WordPress..."
-	wp core install \
-		--allow-root \
-		--url=https://${DOMAIN_NAME} \
-		--title=${WP_TITLE} \
-		--admin_user=${WP_ADMIN} \
-		--admin_password=${WP_ADMIN_PASSWORD} \
-		--admin_email=${WP_ADMIN_EMAIL} || { echo "Install failed!"; exit 1; }
+	if ! wp core is-installed --allow-root >/dev/null 2>&1; then
+		echo "Installing WordPress..."
+		wp core install \
+			--allow-root \
+			--url=https://${DOMAIN_NAME} \
+			--title=${WP_TITLE} \
+			--admin_user=${WP_ADMIN} \
+			--admin_password=${WP_ADMIN_PASSWORD} \
+			--admin_email=${WP_ADMIN_EMAIL} || { echo "Install failed!"; exit 1; }
+	fi
 
-	wp user create \
-		--allow-root \
-		${WP_USER} ${WP_USER_EMAIL} \
-		--role=editor \
-		--user_pass=${WP_USER_PASSWORD}
+	if ! wp user get ${WP_USER} --allow-root >/dev/null 2>&1; then
+		wp user create \
+			--allow-root \
+			${WP_USER} ${WP_USER_EMAIL} \
+			--role=editor \
+			--user_pass=${WP_USER_PASSWORD}
+	fi
 
 	setup_redis_cache
 
-	echo "WordPress installed successfully!"
+	echo "WordPress setup verified successfully!"
 else
 	echo "WordPress already installed, skipping setup..."
 	setup_redis_cache
