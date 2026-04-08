@@ -12,6 +12,7 @@ RUN apk add --no-cache \
 	php83-xml \
 	php83-phar \
 	php83-session \
+	php83-pecl-redis \
 	mariadb-client \
 	wget \
 	curl
@@ -22,7 +23,6 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-# Configure PHP-FPM to listen on TCP port 9000 instead of unix socket
 RUN sed -i 's|listen = /run/php-fpm/php-fpm.sock|listen = 9000|g' \
     /etc/php83/php-fpm.d/www.conf
 

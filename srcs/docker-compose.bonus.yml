@@ -1,0 +1,16 @@
+services:
+  wordpress:
+    depends_on:
+      - mariadb
+      - redis
+    environment:
+      - ENABLE_REDIS_CACHE=true
+
+  redis:
+    build: ./requirements/bonus/redis
+    env_file: .env
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+    restart: always
