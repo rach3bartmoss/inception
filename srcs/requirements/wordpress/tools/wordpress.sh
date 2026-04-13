@@ -65,10 +65,12 @@ if [ ! -f wp-login.php ] || [ ! -f wp-config.php ]; then
 		echo "Creating wp-config.php..."
 		wp config create \
 			--allow-root \
+			--path=/var/www/html \
 			--dbname=${MYSQL_DATABASE} \
 			--dbuser=${MYSQL_USER} \
 			--dbpass=${MYSQL_PASSWORD} \
-			--dbhost=mariadb || { echo "config failed!"; exit 1; }
+			--dbhost=mariadb \
+			--skip-check || { echo "ERROR: wp config create failed!"; exit 1; }
 	fi
 
 	if ! wp core is-installed --allow-root >/dev/null 2>&1; then
