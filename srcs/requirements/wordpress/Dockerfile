@@ -12,6 +12,7 @@ RUN apk add --no-cache \
 	php83-xml \
 	php83-phar \
 	php83-session \
+	php83-ctype \
 	php83-tokenizer \
 	php83-pecl-redis \
 	mariadb-client \
