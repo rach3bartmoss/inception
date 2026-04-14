@@ -1,7 +1,8 @@
 FROM alpine:3.22
 
 RUN apk add --no-cache \
-	vsftpd
+	vsftpd \
+	inetutils-ftp
 
 COPY conf/vsftpd.conf /etc/vsftpd.conf
 
