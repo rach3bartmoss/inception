@@ -40,14 +40,14 @@ build:
 	@$(COMPOSE) build --no-cache
 
 ps:
-	@$(COMPOSE) ps
+	@$(COMPOSE_BONUS) ps
 
 logs:
-	@$(COMPOSE) logs -f
+	@$(COMPOSE_BONUS) logs -f
 
 ## Show logs for a specific service: make log s=nginx
 log:
-	@$(COMPOSE) logs -f $(s)
+	@$(COMPOSE_BONUS) logs -f $(s)
 
 fclean:
 	@echo "$(YELLOW)Stopping all containers (including bonus)...$(RESET)"

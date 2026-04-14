@@ -14,3 +14,17 @@ services:
     networks:
       - app-network
     restart: always
+
+  ftp_server:
+    build: ./requirements/bonus/ftp_server
+    env_file: .env
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress:/var/www/html
+    ports:
+      - "21:21"
+      - "40000-40010:40000-40010"
+    networks:
+      - app-network
+    restart: always
