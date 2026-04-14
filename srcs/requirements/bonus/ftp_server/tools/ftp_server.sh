@@ -12,8 +12,12 @@ if ! id "$FTP_USER" >/dev/null 2>&1; then
 	echo "$FTP_USER:$FTP_PASSWORD" | chpasswd
 fi
 
-# Ensure WordPress mount point exists.
 mkdir -p /var/www/html
+mkdir -p /var/www/html/uploads
+
+chown ftpuser:ftpuser /var/www/html/uploads
+chmod 755 /var/www/html
+
 
 echo "Starting vsftpd for user $FTP_USER"
 exec /usr/sbin/vsftpd /etc/vsftpd.conf
