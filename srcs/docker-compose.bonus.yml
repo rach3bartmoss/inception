@@ -24,7 +24,7 @@ services:
       - wordpress:/var/www/html
     ports:
       - "21:21"
-      - "40000-40010:40000-40010"
+      - "40000-40110:40000-40110"
     networks:
       - app-network
     restart: always
