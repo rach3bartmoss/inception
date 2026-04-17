@@ -21,6 +21,11 @@
 </div>
 
 <div class="step">
+  <div class="label"># create file to upload</div>
+  <div class="cmd">echo "this is a test!! $(date)" > test.txt</div>
+ </div>
+
+<div class="step">
   <div class="label"># upload</div>
   <div class="cmd">curl -T test.txt ftp://localhost:21/ --user ftpuser:ftppassword -v</div>
 </div>
@@ -32,12 +37,12 @@
 
 <div class="step">
   <div class="label"># verify it landed in the WordPress volume</div>
-  <div class="cmd">docker exec -it srcs-wordpress-1 ls -la /var/www/html/test.txt</div>
+  <div class="cmd">docker exec -it srcs-wordpress ls -la /var/www/html/test.txt</div>
 </div>
 
 <div class="step">
   <div class="label"># if upload fails with 553 error, fix write permissions</div>
-  <div class="cmd">docker exec -it srcs-ftp-1 chown ftpuser:ftpuser /var/www/html</div>
+  <div class="cmd">docker exec -it srcs-ftp_server chown ftpuser:ftpuser /var/www/html</div>
 </div>
 
 </body>
