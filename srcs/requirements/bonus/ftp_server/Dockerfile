@@ -9,6 +9,6 @@ COPY conf/vsftpd.conf /etc/vsftpd.conf
 COPY tools/ftp_server.sh /ftp_server.sh
 RUN chmod +x /ftp_server.sh
 
-EXPOSE 21 40000-50000
+EXPOSE 21 40000-40110
 
 CMD ["/ftp_server.sh"]
