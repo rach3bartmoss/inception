@@ -8,6 +8,7 @@ services:
 
   redis:
     build: ./requirements/bonus/redis
+    container_name: redis
     env_file: .env
     ports:
       - "6379:6379"
@@ -17,6 +18,7 @@ services:
 
   ftp_server:
     build: ./requirements/bonus/ftp_server
+    container_name: ftp_server
     env_file: .env
     depends_on:
       - wordpress
@@ -25,6 +27,13 @@ services:
     ports:
       - "21:21"
       - "40000-40110:40000-40110"
+    networks:
+      - app-network
+    restart: always
+
+  static:
+    build: requirements/bonus/static
+    container_name: static-website
     networks:
       - app-network
     restart: always

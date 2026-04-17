@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FTP Tester</title>
+<style>
+  body { font-family: monospace; max-width: 700px; margin: 40px auto; padding: 0 20px; background: #1e1e1e; color: #d4d4d4; }
+  h1 { color: #9cdcfe; font-size: 18px; margin-bottom: 30px; }
+  .step { margin-bottom: 24px; }
+  .label { color: #6a9955; font-size: 13px; margin-bottom: 6px; }
+  .cmd { background: #2d2d2d; border: 1px solid #444; border-radius: 4px; padding: 12px 14px; font-size: 13px; color: #ce9178; }
+</style>
+</head>
+<body>
+
+<h1>vsftpd tester</h1>
+
+<div class="step">
+  <div class="label"># list files</div>
+  <div class="cmd">curl ftp://localhost:21/ --user ftpuser:ftppassword</div>
+</div>
+
+<div class="step">
+  <div class="label"># upload</div>
+  <div class="cmd">curl -T test.txt ftp://localhost:21/ --user ftpuser:ftppassword -v</div>
+</div>
+
+<div class="step">
+  <div class="label"># download</div>
+  <div class="cmd">curl ftp://localhost:21/test.txt --user ftpuser:ftppassword -o downloaded.txt</div>
+</div>
+
+<div class="step">
+  <div class="label"># verify it landed in the WordPress volume</div>
+  <div class="cmd">docker exec -it srcs-wordpress-1 ls -la /var/www/html/test.txt</div>
+</div>
+
+<div class="step">
+  <div class="label"># if upload fails with 553 error, fix write permissions</div>
+  <div class="cmd">docker exec -it srcs-ftp-1 chown ftpuser:ftpuser /var/www/html</div>
+</div>
+
+</body>
+</html>
