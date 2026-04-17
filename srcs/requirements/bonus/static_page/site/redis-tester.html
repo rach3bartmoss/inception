@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redis Tester</title>
+<style>
+  body { font-family: monospace; max-width: 700px; margin: 40px auto; padding: 0 20px; background: #1e1e1e; color: #d4d4d4; }
+  h1 { color: #9cdcfe; font-size: 18px; margin-bottom: 30px; }
+  .step { margin-bottom: 24px; }
+  .label { color: #6a9955; font-size: 13px; margin-bottom: 6px; }
+  .cmd { background: #2d2d2d; border: 1px solid #444; border-radius: 4px; padding: 12px 14px; font-size: 13px; color: #ce9178; }
+  .note { color: #888; font-size: 12px; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<h1>redis cache tester</h1>
+
+<div class="step">
+  <div class="label"># 1. check redis is running</div>
+  <div class="cmd">docker exec -it redis redis-cli ping</div>
+  <div class="note">expected: PONG</div>
+</div>
+
+<div class="step">
+  <div class="label"># 2. check plugin connection status via wp-cli</div>
+  <div class="cmd">docker exec -it wordpress wp redis status --allow-root --path=/var/www/html</div>
+  <div class="note">expected: Status: Connected</div>
+</div>
+
+<div class="step">
+  <div class="label"># 3. check key count before browsing the site</div>
+  <div class="cmd">docker exec -it redis redis-cli dbsize</div>
+  <div class="note">browse the site, then run again — the number should increase</div>
+</div>
+
+<div class="step">
+  <div class="label"># 4. list all keys stored by wordpress</div>
+  <div class="cmd">docker exec -it redis redis-cli keys "*"</div>
+  <div class="note">shows all cached wordpress objects</div>
+</div>
+
+<div class="step">
+  <div class="label"># 5. flush the cache</div>
+  <div class="cmd">docker exec -it wordpress wp redis flush --allow-root --path=/var/www/html</div>
+  <div class="note">clears all redis keys — run dbsize after to confirm it drops to 0</div>
+</div>
+
+<div class="step">
+  <div class="label"># 6. verify WP_REDIS_HOST is set in wp-config</div>
+  <div class="cmd">docker exec -it wordpress grep REDIS /var/www/html/wp-config.php</div>
+  <div class="note">should show WP_REDIS_HOST and WP_REDIS_PORT definitions</div>
+</div>
+
+</body>
+</html>

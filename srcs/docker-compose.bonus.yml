@@ -32,7 +32,7 @@ services:
     restart: always
 
   static:
-    build: requirements/bonus/static
+    build: ./requirements/bonus/static_page
     container_name: static-website
     networks:
       - app-network
