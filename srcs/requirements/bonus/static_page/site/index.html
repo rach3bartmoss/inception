@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inception — dopereir</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Georgia, serif;
+      background: #f9f9f7;
+      color: #222;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+      line-height: 1.7;
+    }
+
+    header {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 24px;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: normal;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: #666;
+      font-size: 15px;
+      margin-top: 6px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      font-size: 14px;
+      font-weight: normal;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #999;
+      margin-bottom: 14px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #333;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .service {
+      border: 1px solid #ddd;
+      background: #fff;
+      padding: 16px;
+      border-radius: 4px;
+    }
+
+    .service strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .service span {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .links a {
+      display: inline-block;
+      margin-right: 16px;
+      font-size: 15px;
+      color: #222;
+      text-decoration: underline;
+    }
+
+    .links a:hover {
+      color: #000;
+    }
+
+    footer {
+      border-top: 1px solid #ccc;
+      padding-top: 20px;
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Inception</h1>
+    <p>A Docker-based infrastructure project — by dopereir &mdash; 42 School</p>
+  </header>
+
+  <section>
+    <h2>About</h2>
+    <p>
+      Inception is a system administration project from 42 School. Each service runs in its own
+      Docker container, built from a custom Dockerfile based on Alpine Linux — no pre-built images
+      are used. Containers communicate over a private Docker network, isolated from the host.
+      Persistent data is stored in named volumes shared between services, ensuring data survives
+      container restarts. The whole infrastructure is orchestrated with Docker Compose and runs
+      inside a virtual machine.
+    </p>
+  </section>
+
+  <section>
+    <h2>Mandatory services</h2>
+    <div class="services">
+      <div class="service">
+        <strong>NGINX</strong>
+        <span>Reverse proxy with TLSv1.3 only, entry point for all traffic</span>
+      </div>
+      <div class="service">
+        <strong>WordPress + PHP-FPM</strong>
+        <span>CMS running without a web server, served via FastCGI</span>
+      </div>
+      <div class="service">
+        <strong>MariaDB</strong>
+        <span>Relational database for WordPress data storage</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Bonus services</h2>
+    <div class="services">
+      <div class="service">
+        <strong>Redis</strong>
+        <span>Object cache for WordPress to reduce database load</span>
+      </div>
+      <div class="service">
+        <strong>vsftpd</strong>
+        <span>FTP server with access to the WordPress volume</span>
+      </div>
+      <div class="service">
+        <strong>Static site</strong>
+        <span>This page — a simple HTML/CSS site served by NGINX</span>
+      </div>
+      <div class="service">
+        <strong>Adminer</strong>
+        <span>Web-based database management interface for MariaDB</span>
+      </div>
+    </div>
+  </section>
+
+  <section links>
+    <h2>Links</h2>
+    <div class="links">
+      <a href="ftp-tester.html">FTP Server tester</a>
+    </div>
+  </section>
+
+  <section links>
+    <div class="links">
+      <a href="redis-tester.html">Redis Object Cache tester</a>
+    </div>
+  </section>
+
+  <section links>
+    <div class="links">
+      <a href="adminer-tester.html">Adminer tester</a>
+    </div>
+  </section>
+
+  <section links>
+    <div class="links">
+      <a href="grafana-tester.html">Prometheus + Grafana tester</a>
+    </div>
+  </section>
+
+  <footer>
+    dopereir &mdash; 42 School &mdash; Inception project
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Adminer Tester</title>
+<style>
+  body { font-family: monospace; max-width: 700px; margin: 40px auto; padding: 0 20px; background: #1e1e1e; color: #d4d4d4; }
+  h1 { color: #9cdcfe; font-size: 18px; margin-bottom: 30px; }
+  .step { margin-bottom: 24px; }
+  .label { color: #6a9955; font-size: 13px; margin-bottom: 6px; }
+  .cmd { background: #2d2d2d; border: 1px solid #444; border-radius: 4px; padding: 12px 14px; font-size: 13px; color: #ce9178; }
+  .note { color: #888; font-size: 12px; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<h1>adminer tester</h1>
+
+<div class="step">
+  <div class="label"># 1. access adminer in the browser</div>
+  <div class="cmd">https://dopereir.42.fr/adminer/</div>
+  <div class="note">should load the adminer login page</div>
+</div>
+
+<div class="step">
+  <div class="label"># 2. login credentials</div>
+  <div class="cmd">System: MySQL/MariaDB | Server: mariadb | Username: wpuser | Password: wppassword | Database: wordpress</div>
+  <div class="note">use the values from your .env file</div>
+</div>
+
+<div class="step">
+  <div class="label"># 3. verify wordpress tables exist</div>
+  <div class="cmd">after login, click on the "wordpress" database — you should see all wp_ tables listed</div>
+  <div class="note">expected: wp_users, wp_posts, wp_options, wp_comments and others</div>
+</div>
+
+
+<div class="step">
+  <div class="label"># 4. insert a test record via adminer</div>
+  <div class="cmd">click on wp_options → "New item" → insert a test row with option_name: test_key and option_value: test_value</div>
+  <div class="note">verifies adminer has write access to the database</div>
+</div>
+
+<div class="step">
+  <div class="label"># 5. export the database via adminer</div>
+  <div class="cmd">click "Export" in the left sidebar → select "wordpress" → format: SQL → click Export</div>
+  <div class="note">downloads a full SQL dump of the wordpress database</div>
+</div>
+
+</body>
+</html>

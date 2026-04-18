@@ -1,6 +1,7 @@
 LOGIN		= dopereir
 DATA_PATH	= /home/$(LOGIN)/data
 COMPOSE		= docker compose -f srcs/docker-compose.yml
+COMPOSE_BONUS	= docker compose -f srcs/docker-compose.yml -f srcs/docker-compose.bonus.yml --env-file srcs/.env
 
 # Colors
 GREEN		= \033[0;32m
@@ -14,6 +15,8 @@ setup:
 	@echo "$(YELLOW)Creating data directories...$(RESET)"
 	@mkdir -p $(DATA_PATH)/wordpress
 	@mkdir -p $(DATA_PATH)/mariadb
+	@mkdir -p $(DATA_PATH)/grafana
+	@mkdir -p $(DATA_PATH)/prometheus
 	@echo "$(GREEN)Directories created at $(DATA_PATH)$(RESET)"
 
 up: setup
@@ -39,23 +42,37 @@ build:
 	@$(COMPOSE) build --no-cache
 
 ps:
-	@$(COMPOSE) ps
+	@$(COMPOSE_BONUS) ps
 
 logs:
-	@$(COMPOSE) logs -f
+	@$(COMPOSE_BONUS) logs -f
 
 ## Show logs for a specific service: make log s=nginx
 log:
-	@$(COMPOSE) logs -f $(s)
+	@$(COMPOSE_BONUS) logs -f $(s)
 
-fclean: down
+fclean:
+	@echo "$(YELLOW)Stopping all containers (including bonus)...$(RESET)"
+	@$(COMPOSE_BONUS) down --remove-orphans
 	@echo "$(RED)Removing all containers, images and volumes...$(RESET)"
-	@docker system prune -af
-	@docker volume prune -f
+	@docker system prune -af --volumes=false
+	# @docker volume prune -f
 	@echo "$(RED)Removing data directories...$(RESET)"
-	@sudo rm -rf $(DATA_PATH)
+	# @sudo rm -rf $(DATA_PATH)
 	@echo "$(GREEN)Full clean complete.$(RESET)"
 
 re: fclean all
 
-.PHONY: all setup up down stop start build ps logs log fclean re
+bonus: setup bonus_up
+
+bonus_up:
+	@echo "$(YELLOW)Building and starting containers with Redis bonus...$(RESET)"
+	@$(COMPOSE_BONUS) up -d --build
+	@echo "$(GREEN)All containers with Redis are up!$(RESET)"
+
+bonus_down:
+	@echo "$(YELLOW)Stopping Redis bonus containers...$(RESET)"
+	@$(COMPOSE_BONUS) down
+	@echo "$(GREEN)Containers stopped.$(RESET)"
+
+.PHONY: all setup up down stop start build ps logs log fclean re bonus bonus_up bonus_down

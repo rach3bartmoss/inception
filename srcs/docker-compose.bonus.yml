@@ -1,0 +1,94 @@
+services:
+  wordpress:
+    depends_on:
+      - mariadb
+      - redis
+    environment:
+      - ENABLE_REDIS_CACHE=true
+
+  redis:
+    build: ./requirements/bonus/redis
+    container_name: redis
+    env_file: .env
+    networks:
+      - app-network
+    restart: always
+
+  ftp_server:
+    build: ./requirements/bonus/ftp_server
+    container_name: ftp_server
+    env_file: .env
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress:/var/www/html
+    ports:
+      - "21:21"
+      - "40000-40110:40000-40110"
+    networks:
+      - app-network
+    restart: always
+
+  static:
+    build: ./requirements/bonus/static_page
+    container_name: static-website
+    networks:
+      - app-network
+    restart: always
+
+  adminer:
+    build: ./requirements/bonus/adminer
+    container_name: adminer
+    networks:
+      - app-network
+    restart: always
+    depends_on:
+      - mariadb
+
+  prometheus:
+    build: ./requirements/bonus/prometheus
+    container_name: prometheus
+    volumes:
+      - prometheus:/var/lib/prometheus
+    networks:
+      - app-network
+    restart: always
+
+  node-exporter:
+    build: ./requirements/bonus/node-exporter
+    container_name: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    networks:
+      - app-network
+    restart: always
+
+  grafana:
+    build: ./requirements/bonus/grafana
+    env_file: .env
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    container_name: grafana
+    volumes:
+      - grafana:/var/lib/grafana
+    networks:
+      - app-network
+    restart: always
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/dopereir/data/grafana
+      o: bind
+  prometheus:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/dopereir/data/prometheus
+      o: bind
