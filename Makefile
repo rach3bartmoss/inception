@@ -15,6 +15,8 @@ setup:
 	@echo "$(YELLOW)Creating data directories...$(RESET)"
 	@mkdir -p $(DATA_PATH)/wordpress
 	@mkdir -p $(DATA_PATH)/mariadb
+	@mkdir -p $(DATA_PATH)/grafana
+	@mkdir -p $(DATA_PATH)/prometheus
 	@echo "$(GREEN)Directories created at $(DATA_PATH)$(RESET)"
 
 up: setup

@@ -46,3 +46,51 @@ services:
     restart: always
     depends_on:
       - mariadb
+
+  prometheus:
+    build: ./requirements/bonus/prometheus
+    container_name: prometheus
+    volumes:
+      - prometheus:/var/lib/prometheus
+    networks:
+      - app-network
+    restart: always
+
+  node-exporter:
+    build: ./requirements/bonus/node-exporter
+    container_name: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+    networks:
+      - app-network
+    restart: always
+
+  grafana:
+    build: ./requirements/bonus/grafana
+    env_file: .env
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    container_name: grafana
+    volumes:
+      - grafana:/var/lib/grafana
+    networks:
+      - app-network
+    restart: always
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/dopereir/data/grafana
+      o: bind
+  prometheus:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/dopereir/data/prometheus
+      o: bind
