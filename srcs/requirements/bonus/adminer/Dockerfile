@@ -8,7 +8,7 @@ RUN apk add --no-cache \
 	nginx \
 	wget
 RUN mkdir -p /var/www/adminer && \
-	mkdir -d /run/nginx
+	mkdir -p /run/nginx
 
 RUN wget -q https://www.adminer.org/latest.php -O /var/www/adminer/index.php
 
