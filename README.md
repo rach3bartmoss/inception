@@ -99,6 +99,13 @@ Classic references:
 - Prometheus documentation: https://prometheus.io/docs/introduction/overview/
 - Grafana documentation: https://grafana.com/docs/grafana/latest/
 - vsftpd documentation: https://security.appspot.com/vsftpd.html
+- Alpine release branches: https://www.alpinelinux.org/releases/
+- NGINX tutorial with MySQL and PHP: https://oneuptime.com/blog/post/2026-02-08-how-to-run-wordpress-with-docker-compose-nginx-mysql-php/view#nginx-configuration
+- More on NGINX: https://oneuptime.com/blog/post/2026-02-08-how-to-run-wordpress-with-docker-compose-nginx-mysql-php/view#nginx-configuration
+- Documentation on WORDPRESS config files: https://gist.github.com/rvanzee/2352093
+- More on WORDPRESS: https://github.com/php/php-src/blob/master/sapi/fpm/www.conf.in
+- How to install Redis on Alpine linux: https://oneuptime.com/blog/post/2026-03-31-redis-install-alpine-linux/view
+- More on redis: https://redis.io/tutorials/operate/orchestration/docker/
 
 AI usage:
 
