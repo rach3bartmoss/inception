@@ -37,3 +37,12 @@ services:
     networks:
       - app-network
     restart: always
+
+  adminer:
+    build: ./requirements/bonus/adminer
+    container_name: adminer
+    networks:
+      - app-network
+    restart: always
+    depends_on:
+      - mariadb
