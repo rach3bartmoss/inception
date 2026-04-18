@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Grafana Tester</title>
+<style>
+  body { font-family: monospace; max-width: 700px; margin: 40px auto; padding: 0 20px; background: #1e1e1e; color: #d4d4d4; }
+  h1 { color: #9cdcfe; font-size: 18px; margin-bottom: 30px; }
+  .step { margin-bottom: 24px; }
+  .label { color: #6a9955; font-size: 13px; margin-bottom: 6px; }
+  .cmd { background: #2d2d2d; border: 1px solid #444; border-radius: 4px; padding: 12px 14px; font-size: 13px; color: #ce9178; }
+  .note { color: #888; font-size: 12px; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<h1>grafana tester</h1>
+
+<div class="step">
+  <div class="label"># 1. access grafana in the browser</div>
+  <div class="cmd">https://dopereir.42.fr/grafana/</div>
+  <div class="note">should load the grafana login page</div>
+</div>
+
+<div class="step">
+  <div class="label"># 2. login credentials</div>
+  <div class="cmd">Username: admin | Password: (from your .env GRAFANA_PASSWORD)</div>
+  <div class="note">set via GF_SECURITY_ADMIN_USER and GF_SECURITY_ADMIN_PASSWORD env vars</div>
+</div>
+
+<div class="step">
+  <div class="label"># 3. verify prometheus is reachable from inside nginx container</div>
+  <div class="cmd">docker exec -it nginx wget -S -O /dev/null http://prometheus:9090 2>&1</div>
+  <div class="note">expected: HTTP/1.1 302 Found — prometheus is up and reachable</div>
+</div>
+
+<div class="step">
+  <div class="label"># 4. verify node-exporter is exposing metrics</div>
+  <div class="cmd">docker exec -it prometheus wget -qO- http://node-exporter:9100/metrics | head -5</div>
+  <div class="note">should return lines like: node_cpu_seconds_total, node_memory_MemFree_bytes</div>
+</div>
+
+<div class="step">
+  <div class="label"># 5. verify prometheus is scraping targets</div>
+  <div class="cmd">docker exec -it prometheus wget -qO- http://localhost:9090/api/v1/targets | grep health</div>
+  <div class="note">expected: "health":"up" for both prometheus and node-exporter</div>
+</div>
+
+<div class="step">
+  <div class="label"># 6. add prometheus as data source in grafana</div>
+  <div class="cmd">Menu → Connections → Data sources → Add data source → Prometheus → URL: http://prometheus:9090 → Save & Test</div>
+  <div class="note">expected: "Successfully queried the Prometheus API"</div>
+</div>
+
+<div class="step">
+  <div class="label"># 7. import node exporter dashboard</div>
+  <div class="cmd">Menu → Dashboards → New → Import → ID: 1860 → Load → select Prometheus → Import</div>
+  <div class="note">gives you a full dashboard with CPU, memory, disk and network panels</div>
+</div>
+
+<div class="step">
+  <div class="label"># 8. verify live data — check all targets are up via promql</div>
+  <div class="cmd">Menu → Connections → Data sources → Prometheus → Explore → query: up</div>
+  <div class="note">expected: value 1 for each target — 1 = up, 0 = down</div>
+</div>
+
+<div class="step">
+  <div class="label"># 9. trigger cpu spike and watch it in grafana</div>
+  <div class="cmd">docker stats</div>
+  <div class="note">run this and watch the CPU panel update live on the dashboard</div>
+</div>
+
+<div class="step">
+  <div class="label"># 10. check prometheus metrics directly</div>
+  <div class="cmd">docker exec -it prometheus wget -qO- http://localhost:9090/api/v1/query?query=node_memory_MemFree_bytes</div>
+  <div class="note">returns raw json with current free memory value from node-exporter</div>
+</div>
+
+</body>
+</html>
