@@ -10,8 +10,6 @@ services:
     build: ./requirements/bonus/redis
     container_name: redis
     env_file: .env
-    ports:
-      - "6379:6379"
     networks:
       - app-network
     restart: always
