@@ -55,10 +55,10 @@ fclean:
 	@echo "$(YELLOW)Stopping all containers (including bonus)...$(RESET)"
 	@$(COMPOSE_BONUS) down --remove-orphans
 	@echo "$(RED)Removing all containers, images and volumes...$(RESET)"
-	@docker system prune -af
-	@docker volume prune -f
+	@docker system prune -af --volumes=false
+	# @docker volume prune -f
 	@echo "$(RED)Removing data directories...$(RESET)"
-	@sudo rm -rf $(DATA_PATH)
+	# @sudo rm -rf $(DATA_PATH)
 	@echo "$(GREEN)Full clean complete.$(RESET)"
 
 re: fclean all
