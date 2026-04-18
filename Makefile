@@ -1,7 +1,7 @@
 LOGIN		= dopereir
 DATA_PATH	= /home/$(LOGIN)/data
 COMPOSE		= docker compose -f srcs/docker-compose.yml
-COMPOSE_BONUS	= docker compose -f srcs/docker-compose.yml -f srcs/docker-compose.bonus.yml
+COMPOSE_BONUS	= docker compose -f srcs/docker-compose.yml -f srcs/docker-compose.bonus.yml --env-file srcs/.env
 
 # Colors
 GREEN		= \033[0;32m
