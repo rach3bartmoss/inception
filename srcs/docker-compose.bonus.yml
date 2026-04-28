@@ -5,7 +5,11 @@ services:
       - redis
     environment:
       - ENABLE_REDIS_CACHE=true
-
+  
+  nginx:
+    volumes:
+      - ./requirements/nginx/conf/bonus.conf:/etc/nginx/conf.d/bonus.conf
+  
   redis:
     build: ./requirements/bonus/redis
     container_name: redis
