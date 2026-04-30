@@ -59,6 +59,7 @@ if [ ! -f wp-login.php ] || [ ! -f wp-config.php ]; then
 	if [ ! -f wp-login.php ]; then
 		echo "Downloading WordPress..."
 		wp core download --allow-root --path=/var/www/html
+		sleep 1
 	fi
 
 	if [ ! -f wp-config.php ]; then
