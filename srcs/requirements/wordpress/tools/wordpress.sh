@@ -111,5 +111,27 @@ else
 	setup_redis_cache
 fi
 
+# Ensure the administrator account matches the environment values.
+# Create or update the desired admin user, and remove the default 'admin' if present.
+if [ -n "${WP_ADMIN}" ]; then
+	if ! wp user get "${WP_ADMIN}" --allow-root >/dev/null 2>&1; then
+		echo "Creating admin user '${WP_ADMIN}'..."
+		wp user create "${WP_ADMIN}" "${WP_ADMIN_EMAIL}" \
+			--role=administrator --user_pass="${WP_ADMIN_PASSWORD}" --allow-root || {
+			echo "Failed to create admin user ${WP_ADMIN}"; exit 1;
+		}
+	else
+		echo "Updating admin user '${WP_ADMIN}' credentials..."
+		wp user update "${WP_ADMIN}" --user_pass="${WP_ADMIN_PASSWORD}" --user_email="${WP_ADMIN_EMAIL}" --allow-root || \
+			echo "Failed to update admin user ${WP_ADMIN}"
+	fi
+
+	if [ "${WP_ADMIN}" != "admin" ] && wp user get admin --allow-root >/dev/null 2>&1; then
+		echo "Deleting default 'admin' user and reassigning content to '${WP_ADMIN}'..."
+		wp user delete admin --reassign="${WP_ADMIN}" --allow-root --yes || \
+			echo "Failed to delete default 'admin' user; you may need to remove it manually."
+	fi
+fi
+
 echo "Starting PHP-FPM..."
 exec php-fpm83 -F -R
