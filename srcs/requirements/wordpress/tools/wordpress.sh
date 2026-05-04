@@ -1,6 +1,15 @@
 #!/bin/sh
 set -e
 
+REQUIRED_VARS="MYSQL_DATABASE MYSQL_USER MYSQL_PASSWORD WP_ADMIN WP_ADMIN_PASSWORD WP_ADMIN_EMAIL DOMAIN_NAME"
+
+for VAR in $REQUIRED_VARS; do
+	if [ -z "$(eval echo \$$VAR)" ]; then
+		echo "ERROR: Environment variable $VAR is not set!"
+		exit 1
+	fi
+done
+
 setup_redis_cache() {
 	if [ "${ENABLE_REDIS_CACHE:-false}" != "true" ]; then
 		echo "Redis cache setup disabled (set ENABLE_REDIS_CACHE=true to enable)."
@@ -76,6 +85,7 @@ if [ ! -f wp-login.php ] || [ ! -f wp-config.php ]; then
 
 	if ! wp core is-installed --allow-root >/dev/null 2>&1; then
 		echo "Installing WordPress..."
+		sleep 2
 		wp core install \
 			--allow-root \
 			--url=https://${DOMAIN_NAME} \
