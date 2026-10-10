@@ -55,7 +55,7 @@ services:
     volumes:
       - prometheus:/var/lib/prometheus
     networks:
-      - monitoring
+      - app-network
     restart: always
 
   node-exporter:
@@ -65,7 +65,7 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
     networks:
-      - monitoring
+      - app-network
     restart: always
 
   nginx-exporter:
@@ -78,7 +78,6 @@ services:
       - nginx
     networks:
       - app-network
-      - monitoring
     restart: always
 
   grafana:
@@ -91,7 +90,7 @@ services:
     volumes:
       - grafana:/var/lib/grafana
     networks:
-      - monitoring
+      - app-network
     restart: always
     depends_on:
       - prometheus
