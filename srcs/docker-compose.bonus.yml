@@ -55,7 +55,7 @@ services:
     volumes:
       - prometheus:/var/lib/prometheus
     networks:
-      - app-network
+      - monitoring
     restart: always
 
   node-exporter:
@@ -65,7 +65,20 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
     networks:
+      - monitoring
+    restart: always
+
+  nginx-exporter:
+    build: ./requirements/bonus/nginx-exporter
+    container_name: nginx-exporter
+    command:
+      - "--nginx.scrape-uri=https://nginx/nginx_status"
+      - "--nginx.ssl-verify=false"
+    depends_on:
+      - nginx
+    networks:
       - app-network
+      - monitoring
     restart: always
 
   grafana:
@@ -78,7 +91,7 @@ services:
     volumes:
       - grafana:/var/lib/grafana
     networks:
-      - app-network
+      - monitoring
     restart: always
     depends_on:
       - prometheus
