@@ -12,6 +12,7 @@ done
 
 setup_redis_cache() {
 	if [ "${ENABLE_REDIS_CACHE:-false}" != "true" ]; then
+		rm -f /var/www/html/wp-content/object-cache.php
 		echo "Redis cache setup disabled (set ENABLE_REDIS_CACHE=true to enable)."
 		return 0
 	fi
@@ -47,6 +48,10 @@ setup_redis_cache() {
 
 mkdir -p /var/www/html
 cd /var/www/html
+
+if [ "${ENABLE_REDIS_CACHE:-false}" != "true" ]; then
+	rm -f /var/www/html/wp-content/object-cache.php
+fi
 
 echo "Waiting for MariaDB..."
 db_ready=false

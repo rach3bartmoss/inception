@@ -9,7 +9,7 @@ RUN wget -q https://github.com/nginx/nginx-prometheus-exporter/releases/download
 
 EXPOSE 9113
 
-CMD ["nginx-prometheus-exporter"]
+CMD [ "nginx-prometheus-exporter", "--nginx.scrape-uri=https://nginx/nginx_status" ]
 
 #Install wget and tar
 #wget nginx-prometheus-exporter repository

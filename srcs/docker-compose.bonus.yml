@@ -71,9 +71,6 @@ services:
   nginx-exporter:
     build: ./requirements/bonus/nginx-exporter
     container_name: nginx-exporter
-    command:
-      - "--nginx.scrape-uri=https://nginx/nginx_status"
-      - "--nginx.ssl-verify=false"
     depends_on:
       - nginx
     networks:
