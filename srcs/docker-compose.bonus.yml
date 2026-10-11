@@ -68,6 +68,15 @@ services:
       - app-network
     restart: always
 
+  nginx-exporter:
+    build: ./requirements/bonus/nginx-exporter
+    container_name: nginx-exporter
+    depends_on:
+      - nginx
+    networks:
+      - app-network
+    restart: always
+
   grafana:
     build: ./requirements/bonus/grafana
     env_file: .env
