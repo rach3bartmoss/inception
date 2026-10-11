@@ -77,6 +77,17 @@ services:
       - app-network
     restart: always
 
+  redis-exporter:
+    build: ./requirements/bonus/redis-exporter
+    container_name: redis-exporter
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - app-network
+    restart: always
+
   grafana:
     build: ./requirements/bonus/grafana
     env_file: .env
